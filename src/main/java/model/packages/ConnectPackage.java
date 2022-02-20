@@ -1,5 +1,6 @@
 package model.packages;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class ConnectPackage implements MqttPackage {
@@ -49,6 +50,7 @@ public class ConnectPackage implements MqttPackage {
         bytes.add(0x04);
         bytes.add(this.flags());
         bytes.add(this.keep_alive);
+        bytes.addAll(this.payload_bytes());
 
         return bytes;
     }
@@ -59,7 +61,7 @@ public class ConnectPackage implements MqttPackage {
         if (this.username != null ){
             flag |= 1 << 7;
         }
-        if (this.username != null ) {
+        if (this.password != null ) {
             flag |= 1 << 6;
         }
         if (this.will_retain) {
@@ -107,4 +109,25 @@ public class ConnectPackage implements MqttPackage {
 
         return mqtt_protocol;
     }
+
+    private ArrayList<Integer> payload_bytes() {
+        ArrayList<Integer> payload = new ArrayList<Integer>();
+        payload.add(Integer.decode(this.client_id));
+        if (this.username != null ){
+            payload.add(Integer.decode(this.username));
+        }
+        if (this.password != null ) {
+            payload.add(Integer.decode(this.password));
+        }
+        if (this.will_topic != null) {
+            payload.add(Integer.decode(this.will_topic));
+        }
+
+        if (this.will_message != null ) {
+            payload.add(Integer.decode(this.will_message));
+        }
+
+        return payload;
+    }
+
 }
