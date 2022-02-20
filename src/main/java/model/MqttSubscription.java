@@ -2,9 +2,9 @@ package model;
 
 public class MqttSubscription {
     private String topic;
-    private Qos qos;
+    private int qos;
 
-    public MqttSubscription(String topic, Qos qos) {
+    public MqttSubscription(String topic, int qos) {
         this.qos = qos;
         this.topic = topic;
     }

@@ -1,7 +1,7 @@
 import model.packages.ConnectPackage;
 import org.junit.jupiter.api.Test;
 
-import static model.Qos.Qos1;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ConnectPackageTest {
@@ -10,7 +10,7 @@ public class ConnectPackageTest {
         ConnectPackage connectPackage = new ConnectPackage("alejo_1",true,false);
         connectPackage.setAuth("alejovillores","alejo123");
         connectPackage.setWillData("error","tuve un error");
-        connectPackage.setQos(Qos1);
+        connectPackage.setQos(1);
 
     }
 }

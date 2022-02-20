@@ -2,8 +2,6 @@ import model.Client;
 import model.MqttSubscription;
 import org.junit.jupiter.api.Test;
 
-import static model.Qos.Qos0;
-import static model.Qos.Qos1;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientTest {
@@ -17,7 +15,7 @@ public class ClientTest {
     @Test
     public void test_02_client_has_new_subscription(){
         Client client = new Client("localhost","7878","client_1");
-        MqttSubscription mqttSubscription = new MqttSubscription("wheather/ba",Qos1);
+        MqttSubscription mqttSubscription = new MqttSubscription("wheather/ba",1);
         client.subscribeTo(mqttSubscription);
         assertFalse(client.empty());
     }
@@ -25,7 +23,7 @@ public class ClientTest {
     @Test
     public void test_03_client_has_removed_subscription(){
         Client client = new Client("localhost","7878","client_1");
-        MqttSubscription mqttSubscription = new MqttSubscription("wheather/ba",Qos1);
+        MqttSubscription mqttSubscription = new MqttSubscription("wheather/ba",1);
         client.subscribeTo(mqttSubscription);
         client.unsubscribeTo(mqttSubscription);
         assertTrue(client.empty());
@@ -39,9 +37,9 @@ public class ClientTest {
         client.setWill_topic("error-topic");
         client.setWill_message("An error occurred");
 
-        MqttSubscription mqttSubscription = new MqttSubscription("wheather/ba/junin",Qos1);
-        MqttSubscription mqttSubscription_2 = new MqttSubscription("wheather/ba/chacabuco",Qos0);
-        MqttSubscription mqttSubscription_3 = new MqttSubscription("wheather/ba/+/lluvia",Qos0);
+        MqttSubscription mqttSubscription = new MqttSubscription("wheather/ba/junin",1);
+        MqttSubscription mqttSubscription_2 = new MqttSubscription("wheather/ba/chacabuco",0);
+        MqttSubscription mqttSubscription_3 = new MqttSubscription("wheather/ba/+/lluvia",0);
 
         client.sendDisconnect();
         assertTrue(client.empty());

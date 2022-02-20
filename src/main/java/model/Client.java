@@ -20,7 +20,7 @@ public class Client {
     private boolean clean_session;
     private boolean will_retain;
 
-    private Qos qos;
+    private int qos;
 
     private LinkedList<MqttSubscription> subscriptions;
 
@@ -30,11 +30,11 @@ public class Client {
         this.port = port;
         this.client_id = client_id;
         this.subscriptions = new LinkedList<MqttSubscription>();
-        this.qos = Qos.Qos0;
+        this.qos = 0;
 
     }
 
-    public void setQos(Qos qos) {
+    public void setQos(int qos) {
         this.qos = qos;
     }
     public void setWill_topic(String will_topic) {

@@ -1,7 +1,5 @@
 package model.packages;
 
-import model.Qos;
-
 import java.util.ArrayList;
 
 public class ConnectPackage implements MqttPackage {
@@ -13,7 +11,7 @@ public class ConnectPackage implements MqttPackage {
     private boolean will_retain;
     private String will_message;
     private String will_topic;
-    private Qos qos;
+    private int qos;
     private int payload;
     private int keep_alive;
 
@@ -24,7 +22,7 @@ public class ConnectPackage implements MqttPackage {
         this.clean_session = clean_session;
         this.client_id = client_id;
         this.will_retain = will_retain;
-        this.qos = Qos.Qos1;
+        this.qos = 0;
         this.payload = 0;
     }
 
@@ -49,17 +47,36 @@ public class ConnectPackage implements MqttPackage {
         bytes.addAll(this.remainingLength());
         bytes.addAll(this.mqtt_bytes());
         bytes.add(0x04);
-        bytes.addAll(this.flags());
+        bytes.add(this.flags());
         bytes.add(this.keep_alive);
 
         return bytes;
     }
 
-    private ArrayList<Integer> flags() {
-        return new ArrayList<Integer>();
+    private int flags() {
+
+        int flag = 0x00;
+        if (this.username != null ){
+            flag |= 1 << 7;
+        }
+        if (this.username != null ) {
+            flag |= 1 << 6;
+        }
+        if (this.will_retain) {
+            flag |= 1 << 5;
+        }
+        flag |= this.qos << 3;
+        if (this.will_message != null ) {
+            flag |= 1 << 2;
+        }
+        if (this.clean_session) {
+            flag |= 1 << 1;
+        }
+
+        return flag;
     }
 
-    public void setQos(Qos qos) {
+    public void setQos(int qos) {
         this.qos = qos;
     }
 
