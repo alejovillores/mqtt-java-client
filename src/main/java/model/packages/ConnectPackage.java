@@ -1,0 +1,93 @@
+package model.packages;
+
+import model.Qos;
+
+import java.util.ArrayList;
+
+public class ConnectPackage implements MqttPackage {
+    final private int package_id = 0x10;
+    private String client_id;
+    private String username;
+    private String password;
+    private boolean clean_session;
+    private boolean will_retain;
+    private String will_message;
+    private String will_topic;
+    private Qos qos;
+    private int payload;
+    private int keep_alive;
+
+
+
+    public ConnectPackage(String client_id, boolean clean_session, boolean will_retain) {
+        super();
+        this.clean_session = clean_session;
+        this.client_id = client_id;
+        this.will_retain = will_retain;
+        this.qos = Qos.Qos1;
+        this.payload = 0;
+    }
+
+    public void setAuth(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.payload += username.length() + password.length();
+    }
+
+    public void setWillData(String will_topic, String will_message) {
+        this.will_message = will_message;
+        this.will_topic = will_topic;
+        this.payload += will_topic.length() + will_message.length();
+    }
+    public void setKeep_alive(int keep_alive) {
+        this.keep_alive = keep_alive;
+    }
+
+    @Override
+    public ArrayList<Integer> toBytes() {
+        ArrayList<Integer> bytes = new ArrayList<Integer>(this.package_id);
+        bytes.addAll(this.remainingLength());
+        bytes.addAll(this.mqtt_bytes());
+        bytes.add(0x04);
+        bytes.addAll(this.flags());
+        bytes.add(this.keep_alive);
+
+        return bytes;
+    }
+
+    private ArrayList<Integer> flags() {
+        return new ArrayList<Integer>();
+    }
+
+    public void setQos(Qos qos) {
+        this.qos = qos;
+    }
+
+    private ArrayList<Integer> remainingLength() {
+        int  x = 10 + this.payload;
+
+        ArrayList<Integer> bytes = new ArrayList<Integer>();
+        while (x > 0) {
+            int encoded_byte = (x % 128);
+            x /= 128;
+
+            if (x > 0) {
+                encoded_byte |= 128;
+            }
+            bytes.add(encoded_byte);
+        }
+        return bytes;
+    }
+
+    private ArrayList<Integer> mqtt_bytes(){
+        ArrayList<Integer> mqtt_protocol =  new ArrayList<Integer>();
+        mqtt_protocol.add(0x00);
+        mqtt_protocol.add(0x04);
+        mqtt_protocol.add(0x4d);
+        mqtt_protocol.add(0x51);
+        mqtt_protocol.add(0x54);
+        mqtt_protocol.add(0x54);
+
+        return mqtt_protocol;
+    }
+}

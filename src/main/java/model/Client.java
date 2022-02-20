@@ -2,6 +2,9 @@ package model;
 
 
 
+import model.packages.ConnectPackage;
+import model.packages.MqttPackage;
+
 import java.util.LinkedList;
 
 public class Client {
@@ -17,17 +20,23 @@ public class Client {
     private boolean clean_session;
     private boolean will_retain;
 
-    private LinkedList<MqttSubscription> subscriptions;
-    // Methods
+    private Qos qos;
 
+    private LinkedList<MqttSubscription> subscriptions;
+
+    // Methods
     public Client(String ip, String port, String client_id){
         this.ip = ip;
         this.port = port;
         this.client_id = client_id;
         this.subscriptions = new LinkedList<MqttSubscription>();
+        this.qos = Qos.Qos0;
 
     }
 
+    public void setQos(Qos qos) {
+        this.qos = qos;
+    }
     public void setWill_topic(String will_topic) {
         this.will_topic = will_topic;
     }
@@ -62,5 +71,34 @@ public class Client {
 
     public void unsubscribeTo(MqttSubscription mqttSubscription) {
         this.subscriptions.removeIf(s -> s.sameTopic(mqttSubscription));
+    }
+
+    public void sendDisconnect() {
+        // simulates disconnect
+        if (this.clean_session){
+            // save subscriptions.
+            int a = 2+2;
+            this.subscriptions.clear();
+        }
+
+        // save data
+    }
+
+    public int connect() {
+        MqttPackage connectPackage = this.makeConnectPackage();
+        /* do socket connection */
+        return 0;
+    }
+
+    private ConnectPackage makeConnectPackage() {
+        ConnectPackage connectPackage = new ConnectPackage(this.client_id,this.clean_session,this.will_retain);
+        if ((this.username != null) && (this.password != null)){
+            connectPackage.setAuth(this.username,this.password);
+        }
+
+        if ((this.will_message != null) && (this.will_topic != null)){
+            connectPackage.setWillData(this.will_topic,this.will_message);
+        }
+        return connectPackage;
     }
 }
