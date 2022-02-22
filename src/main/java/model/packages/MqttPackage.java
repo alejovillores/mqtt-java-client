@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 public interface MqttPackage {
 
-    ArrayList<Integer> toBytes();
+    ArrayList<Byte> toBytes();
 
 }
