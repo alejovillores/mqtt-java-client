@@ -48,7 +48,7 @@ public class ConnectPackageTest {
     }
 
     @Test
-    public void test_03_connect_payload_header_to_bytes(){
+    public void test_03_connect_payload_to_bytes(){
         ConnectPackage connectPackage = new ConnectPackage("avillores1",true,false);
         connectPackage.setAuth("alejovillores","ale123");
         connectPackage.setWillData("boca","gano boca 3-2");
