@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ConnectPackage implements MqttPackage {
     final private int package_id = 0x10;
@@ -52,19 +54,30 @@ public class ConnectPackage implements MqttPackage {
         bytes.addAll(this.remainingLength());
         bytes.addAll(this.mqtt_bytes());
         bytes.add((byte)0x04);
-        bytes.add((byte)this.flags());
-        bytes.add((byte)this.keep_alive);
+        bytes.add(this.flags());
+        bytes.addAll(this.keep_alive_bytes());
         bytes.addAll(this.payload_bytes());
 
         return bytes;
     }
 
+    private List<Byte> keep_alive_bytes() {
+        List<Byte> l = new ArrayList<>();
+        // int -> 4 bytes -> (8 8 NO) 8 8, solo tengo que usar 2 bytes.
+        byte msb = (byte ) ((this.keep_alive & 0x0000ff00) >> 8);
+        byte lsb = (byte ) (this.keep_alive & 0x000000ff);
+
+        l.add(msb);
+        l.add(lsb);
+        return l;
+    }
+
     public byte headerBytes(){
         return (byte)this.package_id;
     }
-    public int flags() {
+    public byte flags() {
 
-        int flag = 0x00;
+        byte flag = 0x00;
         if (this.username != null ){
             flag |= 1 << 7;
         }
