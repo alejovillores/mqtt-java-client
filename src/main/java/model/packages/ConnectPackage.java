@@ -194,4 +194,7 @@ public class ConnectPackage implements MqttPackage {
         return payload;
     }
 
+    public boolean isPersistent() {
+        return (!this.clean_session);
+    }
 }

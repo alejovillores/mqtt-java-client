@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,5 +96,28 @@ public class ConnectPackageTest {
             real.add((byte) l_i);
         }
         assertEquals(real,bytes);
+    }
+
+
+    @Test
+    public void test_06_connect_has_clean_session(){
+        ConnectPackage connectPackage = new ConnectPackage("avillores1",true,false);
+        connectPackage.setAuth("alejovillores","ale123");
+        connectPackage.setWillData("boca","gano boca 3-2");
+        connectPackage.setKeep_alive(10);
+        connectPackage.setQos(0);
+
+        assertFalse(connectPackage.isPersistent());
+    }
+
+    @Test
+    public void test_07_connect_has_persistent_session(){
+        ConnectPackage connectPackage = new ConnectPackage("avillores1",false,false);
+        connectPackage.setAuth("alejovillores","ale123");
+        connectPackage.setWillData("boca","gano boca 3-2");
+        connectPackage.setKeep_alive(10);
+        connectPackage.setQos(0);
+
+        assertTrue(connectPackage.isPersistent());
     }
 }
