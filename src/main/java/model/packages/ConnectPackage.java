@@ -1,5 +1,8 @@
 package model.packages;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -44,7 +47,7 @@ public class ConnectPackage implements MqttPackage {
 
     @Override
     public ArrayList<Byte> toBytes() {
-        ArrayList<Byte> bytes = new ArrayList<Byte>();
+        ArrayList<Byte> bytes = new ArrayList<>();
         bytes.add(this.headerBytes());
         bytes.addAll(this.remainingLength());
         bytes.addAll(this.mqtt_bytes());
@@ -89,7 +92,7 @@ public class ConnectPackage implements MqttPackage {
     public ArrayList<Byte> remainingLength() {
         int  x = (10 + this.payload);
 
-        ArrayList<Byte> bytes = new ArrayList<Byte>();
+        ArrayList<Byte> bytes = new ArrayList<>();
         while (x > 0) {
             int encoded_byte = (x % 128);
             x /= 128;
@@ -103,7 +106,7 @@ public class ConnectPackage implements MqttPackage {
     }
 
     public ArrayList<Byte> mqtt_bytes(){
-        ArrayList<Byte> mqtt_protocol =  new ArrayList<Byte>();
+        ArrayList<Byte> mqtt_protocol =  new ArrayList<>();
         mqtt_protocol.add((byte)0x00);
         mqtt_protocol.add((byte)0x04);
         mqtt_protocol.add((byte)0x4d);
@@ -115,25 +118,26 @@ public class ConnectPackage implements MqttPackage {
     }
 
     public ArrayList<Byte> payload_bytes() {
-        ArrayList<Byte> payload = new ArrayList<Byte>();
+        ArrayList<Byte> payload = new ArrayList<>();
+
 
         byte[] bytes = this.client_id.getBytes(StandardCharsets.UTF_8);
+        short lenByte = (short) this.client_id.length();
+        byte msb = (byte) (lenByte >> 8);
+        byte lsb = (byte) (lenByte & 0x00ff);
+
+        payload.add(msb);
+        payload.add(lsb);
         for (byte b : bytes) {
             payload.add(b);
         }
-        if (this.username != null ){
-            bytes = this.username.getBytes(StandardCharsets.UTF_8);
-            for (byte b : bytes) {
-                payload.add(b);
-            }
-        }
-        if (this.password != null ) {
-            bytes = this.password.getBytes(StandardCharsets.UTF_8);
-            for (byte b : bytes) {
-                payload.add( b);
-            }
-        }
+
         if (this.will_topic != null) {
+            lenByte = (short) this.will_topic.length();
+            msb = (byte) (lenByte >> 8);
+            lsb = (byte) (lenByte & 0x00ff);
+            payload.add(msb);
+            payload.add(lsb);
             bytes = this.will_topic.getBytes(StandardCharsets.UTF_8);
             for (byte b : bytes) {
                 payload.add( b);
@@ -141,9 +145,37 @@ public class ConnectPackage implements MqttPackage {
         }
 
         if (this.will_message != null ) {
+            lenByte = (short) this.will_message.length();
+            msb = (byte) (lenByte >> 8);
+            lsb = (byte) (lenByte & 0x00ff);
+            payload.add(msb);
+            payload.add(lsb);
             bytes = this.will_message.getBytes(StandardCharsets.UTF_8);
             for (byte b : bytes) {
                 payload.add(b);
+            }
+        }
+
+        if (this.username != null ){
+            lenByte = (short) this.username.length();
+            msb = (byte) (lenByte >> 8);
+            lsb = (byte) (lenByte & 0x00ff);
+            payload.add(msb);
+            payload.add(lsb);
+            bytes = this.username.getBytes(StandardCharsets.UTF_8);
+            for (byte b : bytes) {
+                payload.add(b);
+            }
+        }
+        if (this.password != null ) {
+            lenByte = (short) this.password.length();
+            msb = (byte) (lenByte >> 8);
+            lsb = (byte) (lenByte & 0x00ff);
+            payload.add(msb);
+            payload.add(lsb);
+            bytes = this.password.getBytes(StandardCharsets.UTF_8);
+            for (byte b : bytes) {
+                payload.add( b);
             }
         }
         return payload;
