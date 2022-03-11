@@ -3,6 +3,9 @@ import model.packages.Publish;
 import model.packages.PublishQoS0;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PublishTest {
@@ -44,8 +47,15 @@ public class PublishTest {
 
     @Test
     public void test_06_publish_qos_to_bytes(){
+        ArrayList<Byte> expectedBytes = new ArrayList<>();
+        for (int i : Arrays.asList( 0x31, 0x11, 0x00, 0x0A,  0x4f, 0x50, 0x45, 0x4e, 0x4c, 0x41, 0x42, 0x50, 0x52, 0x4f, 0x48, 0x45, 0x4c, 0x4c, 0x4f)){
+            expectedBytes.add((byte) i);
+        }
 
+        Publish publish_qos0 = new PublishQoS0("OPENLABPRO",0,"HELLO",true,false);
+        ArrayList<Byte> qosToBytes = publish_qos0.toBytes();
 
+        assertEquals(expectedBytes,qosToBytes);
     }
 
 }
