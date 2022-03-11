@@ -1,5 +1,6 @@
 package model.packages;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public interface Publish {
@@ -16,4 +17,6 @@ public interface Publish {
     Collection<Byte> variableHeaderBytes();
 
     Collection<Byte> payloadBytes();
+
+    ArrayList<Byte> toBytes();
 }
