@@ -8,8 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class PublishQoS0 implements Publish,MqttPackage {
-        private final int qos;
+public class PublishQoS0 extends Publish implements MqttPackage {
         private  final String topicName;
         private final String payload;
         private final boolean retainFlag;
@@ -18,9 +17,9 @@ public class PublishQoS0 implements Publish,MqttPackage {
         private final int MSB = 0x0000ff00;
         private final int LSB = 0x000000ff;
 
-        public PublishQoS0(String topicName, int qos, String payload, boolean retainFlag, boolean dup) {
+        public PublishQoS0(String topicName, String payload, boolean retainFlag, boolean dup) {
+            super(payload,topicName,0);
             this.topicName = topicName;
-            this.qos = qos;
             this.payload = payload;
             this.retainFlag = retainFlag;
             this.dup = dup;
@@ -48,31 +47,11 @@ public class PublishQoS0 implements Publish,MqttPackage {
                 publishByte |= (byte) 0x08;
             }
 
-            publishByte |= (byte) this.qos << 1;
-
             if (this.retainFlag){
                 publishByte |= (byte) 0x01;
             }
 
             return publishByte;
-        }
-
-        @Override
-        public Collection<Byte> lengthAlgorithm() {
-
-            int  x = (2 + this.payload.length() + this.topicName.length());
-
-            ArrayList<Byte> b = new ArrayList<>();
-            while (x > 0) {
-                int encoded_byte = (x % 128);
-                x /= 128;
-
-                if (x > 0) {
-                    encoded_byte |= 128;
-                }
-                b.add((byte) encoded_byte);
-            }
-            return b;
         }
 
         @Override
