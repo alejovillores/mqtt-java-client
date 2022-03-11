@@ -14,7 +14,9 @@ public class PublishQoS0 implements Publish,MqttPackage {
         private final String payload;
         private final boolean retainFlag;
         private final boolean dup;
-        private int payloadLength;
+
+        private final int MSB = 0x0000ff00;
+        private final int LSB = 0x000000ff;
 
         public PublishQoS0(String topicName, int qos, String payload, boolean retainFlag, boolean dup) {
             this.topicName = topicName;
@@ -58,7 +60,7 @@ public class PublishQoS0 implements Publish,MqttPackage {
         @Override
         public Collection<Byte> lengthAlgorithm() {
 
-            int  x = (2 + this.payload.length());
+            int  x = (2 + this.payload.length() + this.topicName.length());
 
             ArrayList<Byte> b = new ArrayList<>();
             while (x > 0) {
@@ -76,12 +78,12 @@ public class PublishQoS0 implements Publish,MqttPackage {
         @Override
         public Collection<Byte> variableHeaderBytes() {
             ArrayList<Byte> variableHeaderBytes = new ArrayList<>();
-            byte topicNameMsb  = (byte) ((this.topicName.length() & 0x0000ff00) >> 8);
-            byte topicNameLsb  = (byte) (this.topicName.length() &  0x000000ff);
+            byte topicNameMsb  = (byte) ((this.topicName.length() & MSB) >> 8);
+            byte topicNameLsb  = (byte) (this.topicName.length() &  LSB);
             variableHeaderBytes.add(topicNameMsb);
             variableHeaderBytes.add(topicNameLsb);
 
-            for (byte i: this.payload.getBytes(StandardCharsets.UTF_8)){
+            for (byte i: this.topicName.getBytes(StandardCharsets.UTF_8)){
                 variableHeaderBytes.add(i);
             }
             return variableHeaderBytes;
@@ -90,10 +92,6 @@ public class PublishQoS0 implements Publish,MqttPackage {
         @Override
         public Collection<Byte> payloadBytes() {
             ArrayList<Byte> payloadBytes = new ArrayList<>();
-            byte payloadMsb = (byte) ((this.payload.length() & 0x0000ff00) >> 8);
-            byte payloadLsb = (byte) (this.payload.length() &  0x000000ff);
-            payloadBytes.add(payloadMsb);
-            payloadBytes.add(payloadLsb);
             for (byte b : this.payload.getBytes(StandardCharsets.UTF_8)){
                 payloadBytes.add(b);
             }
