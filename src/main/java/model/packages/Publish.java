@@ -1,10 +1,8 @@
 package model.packages;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public interface Publish {
-
     int getId();
 
     boolean isRetained();

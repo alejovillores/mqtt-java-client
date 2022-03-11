@@ -1,3 +1,4 @@
+
 import model.packages.Publish;
 import model.packages.PublishQoS0;
 import org.junit.jupiter.api.Test;
@@ -40,4 +41,11 @@ public class PublishTest {
 
         assertFalse(publish_qos0.isDuplicated());
     }
+
+    @Test
+    public void test_06_publish_qos_to_bytes(){
+
+
+    }
+
 }
