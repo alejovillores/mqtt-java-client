@@ -1,5 +1,8 @@
 package model.packages;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public interface Publish {
 
     int getId();
@@ -7,4 +10,12 @@ public interface Publish {
     boolean isRetained();
 
     boolean isDuplicated();
+
+    Byte flagByte();
+
+    Collection<Byte> lengthAlgorithm();
+
+    Collection<Byte> variableHeaderBytes();
+
+    Collection<Byte> payloadBytes();
 }
