@@ -2,11 +2,12 @@ package model;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import model.packages.Suback;
 
 public class MqttSubscription {
     private String topic;
     private int qos;
-    final int QOS_LENGTH = 3;
+    final int QOS_LENGTH = 2;
 
     public MqttSubscription(String topic, int qos) {
         this.qos = qos;
@@ -25,8 +26,12 @@ public class MqttSubscription {
     public int completeLength() {
         return (this.topic.length() + QOS_LENGTH);
     }
+    public int topicLength() {
+        return this.topic.length();
+    }
 
-    public ArrayList<Byte> packetIDBytes() {
+
+    public ArrayList<Byte> topicBytes() {
         ArrayList<Byte> bytes = new ArrayList<>();
 
         short len = (short) this.topic.length();
@@ -39,7 +44,12 @@ public class MqttSubscription {
         return bytes;
     }
 
+
     public Byte qosBytes() {
         return (byte) this.qos;
+    }
+
+    public void addQosToSuback(Suback suback) {
+        suback.addQos(this.qos);
     }
 }

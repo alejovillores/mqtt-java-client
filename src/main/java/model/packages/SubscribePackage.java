@@ -31,7 +31,7 @@ public class SubscribePackage implements MqttPackage {
     private ArrayList<Byte> payloadBytes() {
         ArrayList<Byte> payloadBytes = new ArrayList<>();
         for (MqttSubscription sb: this.subscriptions){
-            payloadBytes.addAll(sb.packetIDBytes());
+            payloadBytes.addAll(sb.topicBytes());
             payloadBytes.add(sb.qosBytes());
         }
         return payloadBytes;
