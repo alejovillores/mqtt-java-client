@@ -2,6 +2,7 @@ package model;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import model.packages.Suback;
 
 public class MqttSubscription {
     private String topic;
@@ -46,5 +47,9 @@ public class MqttSubscription {
 
     public Byte qosBytes() {
         return (byte) this.qos;
+    }
+
+    public void addQosToSuback(Suback suback) {
+        suback.addQos(this.qos);
     }
 }
