@@ -38,7 +38,7 @@ public class SubscribePackage implements MqttPackage {
     }
 
     public void addSubscription(MqttSubscription mqttSubscription) {
-        this.payloadLength += mqttSubscription.completeLength();
+        this.payloadLength += mqttSubscription.completeLength() + 1;
         this.subscriptions.add(mqttSubscription);
     }
 
